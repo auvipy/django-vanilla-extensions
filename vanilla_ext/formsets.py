@@ -38,3 +38,25 @@ class BaseFormSetFactory:
             formset_class.form = staticmethod(
                 curry(formset_class.form, **ext_form_kwargs))
         return formset_class(data=data, files=files, **kwargs)
+
+
+class FormsetMixin(BaseFormSetFactory):
+    """
+    Mixin class for constructing a formset.
+    """
+    formset_class = BaseFormSet
+    form_class = None
+    extra = 2
+    can_order = False
+    can_delete = False
+    max_num = None
+
+    def formset_factory(self):
+        kwargs = {
+            'formset': self.formset_class,
+            'extra': self.extra,
+            'max_num': self.max_num,
+            'can_order': self.can_order,
+            'can_delete': self.can_delete
+        }
+        return formset_factory(self.form_class, **kwargs)
