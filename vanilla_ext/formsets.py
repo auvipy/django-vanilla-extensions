@@ -166,3 +166,21 @@ class GenericInlineFormSetFactory(BaseFormSetFactory):
         if self.form_class:
             kwargs['form'] = self.form_class
         return generic_inlineformset_factory(self.inline_model, **kwargs)
+
+
+class InlineFormSet(InlineFormSetFactory):
+    """
+    An class that provides a way to handle inline formsets within a view.
+    """
+    def __init__(self, parent_model):
+        self.inline_model = self.model
+        self.model = parent_model
+
+
+class GenericInlineFormSet(GenericInlineFormSetFactory):
+    """
+    An class to handle generic inline formsets within a view.
+    """
+    def __init__(self, parent_model):
+        self.inline_model = self.model
+        self.model = parent_model
