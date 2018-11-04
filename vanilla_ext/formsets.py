@@ -62,7 +62,7 @@ class FormsetMixin(BaseFormSetFactory):
         return formset_factory(self.form_class, **kwargs)
 
 
-class ModelFormSetMixin(BaseFormSetMixin):
+class ModelFormSetMixin(BaseFormSetFactory):
     """
     Mixin class for constructing a model formset.
     """
@@ -91,3 +91,42 @@ class ModelFormSetMixin(BaseFormSetMixin):
         if self.form_class:
             kwargs['form'] = self.form_class
         return modelformset_factory(self.model, **kwargs)
+
+
+class InlineFormSetFactory(BaseFormSetFactory):
+    """
+    Mixin class for constructing an inline formset.
+    """
+    formset_class = BaseInlineFormSet
+    form_class = None
+    extra = 2
+    can_order = False
+    can_delete = False
+    max_num = None
+    model = None
+    fields = None
+    exclude = None
+    formfield_callback = None
+    inline_model = None
+    fk_name = None
+
+    def formset_factory(self):
+        """
+        Returns the keyword arguments for calling the formset factory
+        """
+        kwargs = {
+            'formset': self.formset_class,
+            'extra': self.extra,
+            'max_num': self.max_num,
+            'can_order': self.can_order,
+            'can_delete': self.can_delete,
+            'fields': self.fields,
+            'exclude': self.exclude,
+            'formfield_callback': self.formfield_callback,
+            'fk_name': self.fk_name
+        }
+        if self.form_class:
+            kwargs['form'] = self.form_class
+        return inlineformset_factory(self.model, self.inline_model, **kwargs)
+
+
