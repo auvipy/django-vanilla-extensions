@@ -130,3 +130,39 @@ class InlineFormSetFactory(BaseFormSetFactory):
         return inlineformset_factory(self.model, self.inline_model, **kwargs)
 
 
+class GenericInlineFormSetFactory(BaseFormSetFactory):
+    """
+    Factory class for constructing an generic inline formset.
+    """
+    formset_class = BaseGenericInlineFormSet
+    extra = 2
+    can_order = False
+    can_delete = False
+    max_num = None
+    model = None
+    fields = None
+    exclude = None
+    formfield_callback = None
+    inline_model = None
+    ct_field = 'content_type'
+    ct_fk_field = 'object_id'
+
+    def formset_factory(self):
+        """
+        Returns the keyword arguments for calling the formset factory
+        """
+        kwargs = {
+            'formset': self.formset_class,
+            'extra': self.extra,
+            'max_num': self.max_num,
+            'can_order': self.can_order,
+            'can_delete': self.can_delete,
+            'fields': self.fields,
+            'exclude': self.exclude,
+            'formfield_callback': self.formfield_callback,
+            'ct_field': self.ct_field,
+            'fk_field': self.ct_fk_field,
+        }
+        if self.form_class:
+            kwargs['form'] = self.form_class
+        return generic_inlineformset_factory(self.inline_model, **kwargs)
