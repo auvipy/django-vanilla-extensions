@@ -60,3 +60,34 @@ class FormsetMixin(BaseFormSetFactory):
             'can_delete': self.can_delete
         }
         return formset_factory(self.form_class, **kwargs)
+
+
+class ModelFormSetMixin(BaseFormSetMixin):
+    """
+    Mixin class for constructing a model formset.
+    """
+    formset_class = BaseModelFormSet
+    form_class = None
+    extra = 2
+    can_order = False
+    can_delete = False
+    max_num = None
+    model = None
+    fields = None
+    exclude = None
+    formfield_callback = None
+
+    def formset_factory(self):
+        kwargs = {
+            'formset': self.formset_class,
+            'extra': self.extra,
+            'max_num': self.max_num,
+            'can_order': self.can_order,
+            'can_delete': self.can_delete,
+            'fields': self.fields,
+            'exclude': self.exclude,
+            'formfield_callback': self.formfield_callback
+        }
+        if self.form_class:
+            kwargs['form'] = self.form_class
+        return modelformset_factory(self.model, **kwargs)
