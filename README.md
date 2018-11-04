@@ -1,2 +1,2 @@
-# django-vanillasets
-The missing FormSets and ViewSets for django vanilla views.
+# django-vanilla-extensions
+Missing extensions for django-vanilla-views
