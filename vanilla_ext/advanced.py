@@ -61,3 +61,33 @@ class BaseInlinesView(GenericModelView):
         if self.success_url:
             return self.success_url
         return self.request.get_full_path()
+
+
+class CreateWithInlinesView(BaseInlinesView):
+    def get(self, request, *args, **kwargs):
+        """
+        Displays a blank version of the form and formsets.
+        """
+        self.object = None
+        form = self.get_form()
+        inlines = self.get_inlines()
+        context = self.get_context_data(form=form, inlines=inlines)
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form and formset instances
+        with the passed POST variables and then checked for validity.
+        """
+        self.object = None
+        form = self.get_form(request.POST, request.FILES)
+        if form.is_valid():
+            self.object = form.save(commit=False)
+            inlines = self.get_inlines(
+                request.POST, request.FILES, instance=self.object)
+        else:
+            inlines = self.get_inlines(request.POST, request.FILES)
+
+        if form.is_valid() and all_valid(inlines):
+            return self.forms_valid(form, inlines)
+        return self.forms_invalid(form, inlines)
