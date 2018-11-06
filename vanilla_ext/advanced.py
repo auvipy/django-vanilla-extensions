@@ -1,7 +1,6 @@
 from django.forms.formsets import all_valid
 from django.http import HttpResponseRedirect
 from vanilla import GenericModelView
-from vanilla_ext import InlineFormSetFactory
 
 
 class BaseInlinesView(GenericModelView):
@@ -81,6 +80,38 @@ class CreateWithInlinesView(BaseInlinesView):
         """
         self.object = None
         form = self.get_form(request.POST, request.FILES)
+        if form.is_valid():
+            self.object = form.save(commit=False)
+            inlines = self.get_inlines(
+                request.POST, request.FILES, instance=self.object)
+        else:
+            inlines = self.get_inlines(request.POST, request.FILES)
+
+        if form.is_valid() and all_valid(inlines):
+            return self.forms_valid(form, inlines)
+        return self.forms_invalid(form, inlines)
+
+
+class UpdateWithInlinesView(BaseInlinesView):
+    def get(self, request, *args, **kwargs):
+        """
+        Displays a pre-filled version of the form and formsets.
+        """
+        self.object = self.get_object()
+        form = self.get_form(instance=self.object)
+        inlines = self.get_inlines(instance=self.object)
+        context = self.get_context_data(form=form, inlines=inlines)
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form and formset
+        instances with the passed POST variables and then checked
+        for validity.
+        """
+        self.object = self.get_object()
+        form = self.get_form(request.POST, request.FILES, instance=self.object)
+
         if form.is_valid():
             self.object = form.save(commit=False)
             inlines = self.get_inlines(
