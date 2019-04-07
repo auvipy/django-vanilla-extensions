@@ -7,7 +7,7 @@ authors = [
     "Tom Christie <github.com/tomchristie>"
 
 ]
-license = "AGPL"
+license = "MIT"
 
 readme = "README.md"
 
@@ -21,7 +21,7 @@ keywords = ["python", "django", "django-vanilla-views"]
 [tool.poetry.dependencies]
 python = "^3.4"
 django = "^2.0.0"
-django = "^1.0.5"
+django-vanilla-views = "^1.0.5"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.10"

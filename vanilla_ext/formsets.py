@@ -10,8 +10,8 @@ class BaseFormSetFactory:
     Used by each of the following:
     * FormSetMixin
     * ModelFormSetMixin
-    * InlineFormSetMixin
-    * GenericInlineFormSetMixin
+    * InlineFormSetFactory
+    * GenericInlineFormSetFactory
     """
     formset_context_name = None
 
